@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <title>Laptop Cleaning Mode</title>
+  <style>
+    :root {
+      --bg-page: #0b1120;
+      --bg-card: #131c31;
+      --bg-elevated: rgba(255, 255, 255, 0.05);
+      --border-color: rgba(148, 163, 184, 0.16);
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --accent: #38bdf8;
+      --accent-glow: rgba(56, 189, 248, 0.25);
+    }
+    body[data-theme="mint"] {
+      --bg-page: #ecfdf5; --bg-card: #ffffff; --bg-elevated: rgba(6, 78, 59, 0.06);
+      --border-color: rgba(6, 78, 59, 0.14); --text-primary: #064e3b; --text-secondary: #047857;
+      --accent: #10b981; --accent-glow: rgba(16, 185, 129, 0.22);
+    }
+    body[data-theme="cyber"] {
+      --bg-page: #0a0612; --bg-card: #140d24; --bg-elevated: rgba(168, 85, 247, 0.1);
+      --border-color: rgba(168, 85, 247, 0.3); --text-primary: #f3e8ff; --text-secondary: #d8b4fe;
+      --accent: #c084fc; --accent-glow: rgba(192, 132, 252, 0.3);
+    }
+    body {
+      margin: 0; width: 310px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg-page); color: var(--text-primary); padding: 14px; box-sizing: border-box;
+    }
+    .card { background-color: var(--bg-card); border: 1px solid var(--border-color); border-radius: 14px; padding: 12px; margin-bottom: 10px; }
+    .row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    button, select { font-family: inherit; }
+    .theme-btn { flex: 1; padding: 6px 4px; font-size: 11px; font-weight: bold; border-radius: 8px; border: 1px solid var(--border-color); background: transparent; color: var(--text-primary); cursor: pointer; }
+    .theme-btn.active { background: var(--accent-glow); border-color: var(--accent); color: var(--accent); }
+    .btn-start { width: 100%; padding: 11px; font-weight: bold; font-size: 13px; background: var(--accent); color: #000; border: none; border-radius: 10px; cursor: pointer; transition: 0.2s; }
+    .btn-start:disabled { opacity: 0.45; cursor: not-allowed; }
+    .toggle-checkbox:checked ~ .toggle-dot { transform: translateX(18px); }
+  </style>
+</head>
+<body data-theme="dark">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <span style="font-size: 20px;">🧽</span>
+      <div>
+        <h3 style="margin: 0; font-size: 14px; font-weight: bold;">Laptop Cleaner</h3>
+        <p style="margin: 0; font-size: 10px; color: var(--text-secondary);">v1.0 • Fullscreen Mode</p>
+      </div>
+    </div>
+    <button id="langToggleBtn" style="padding: 4px 8px; font-size: 11px; font-weight: bold; border-radius: 6px; background: var(--bg-elevated); border: 1px solid var(--border-color); color: var(--text-primary); cursor: pointer;">
+      🇻🇳 VI
+    </button>
+  </div>
+
+  <div class="card" style="font-size: 11px; line-height: 1.4; color: var(--text-secondary);">
+    ℹ️ <span id="txtNotice">Chế độ Fullscreen ẩn taskbar và chặn trình duyệt. Phím hệ thống (Windows, Alt+Tab) do OS quản lý.</span>
+  </div>
+
+  <div class="card">
+    <div class="row">
+      <span style="font-size: 12px; font-weight: 600;" id="txtKb">Khóa Bàn phím</span>
+      <label style="position: relative; display: inline-flex; align-items: center; cursor: pointer;">
+        <input type="checkbox" id="kbToggle" checked style="position: absolute; opacity: 0; cursor: pointer;" class="toggle-checkbox">
+        <div id="kbTrack" style="width: 36px; height: 18px; background: var(--accent); border-radius: 9px; transition: 0.2s;"></div>
+        <div class="toggle-dot" style="position: absolute; left: 2px; width: 14px; height: 14px; background: #fff; border-radius: 50%; transition: 0.2s; transform: translateX(18px);"></div>
+      </label>
+    </div>
+    <div class="row" style="margin-bottom: 0;">
+      <span style="font-size: 12px; font-weight: 600;" id="txtTp">Khóa Touchpad</span>
+      <label style="position: relative; display: inline-flex; align-items: center; cursor: pointer;">
+        <input type="checkbox" id="tpToggle" checked style="position: absolute; opacity: 0; cursor: pointer;" class="toggle-checkbox">
+        <div id="tpTrack" style="width: 36px; height: 18px; background: var(--accent); border-radius: 9px; transition: 0.2s;"></div>
+        <div class="toggle-dot" style="position: absolute; left: 2px; width: 14px; height: 14px; background: #fff; border-radius: 50%; transition: 0.2s; transform: translateX(18px);"></div>
+      </label>
+    </div>
+  </div>
+
+  <div class="card">
+    <div style="font-size: 11px; margin-bottom: 6px; color: var(--text-secondary);" id="txtTheme">Giao diện màu sắc:</div>
+    <div style="display: flex; gap: 6px;">
+      <button class="theme-btn active" data-theme="dark" id="btn-dark">Dark Pro</button>
+      <button class="theme-btn" data-theme="mint" id="btn-mint">Mint Clean</button>
+      <button class="theme-btn" data-theme="cyber" id="btn-cyber">Cyber Neon</button>
+    </div>
+  </div>
+
+  <div class="card" style="display: flex; justify-content: space-between; align-items: center;">
+    <span style="font-size: 11px; color: var(--text-secondary);" id="txtTimer">Thời gian:</span>
+    <select id="durationSelect" style="background: var(--bg-page); color: var(--text-primary); border: 1px solid var(--border-color); border-radius: 6px; padding: 4px; font-size: 11px;">
+      <option value="15">15 giây (Test)</option>
+      <option value="60">1 phút</option>
+      <option value="180" selected>3 phút</option>
+      <option value="300">5 phút</option>
+    </select>
+  </div>
+
+  <div id="safetyAlert" style="display: none; font-size: 11px; color: #f87171; background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.3); border-radius: 8px; padding: 8px; margin-bottom: 10px;">
+    ⚠️ <span id="txtSafety">Không phát hiện chuột ngoại vi! Chỉ được khóa 1 trong 2 thiết bị.</span>
+  </div>
+
+  <button id="startCleanBtn" class="btn-start">Bắt đầu Vệ sinh (Fullscreen)</button>
+  <script src="popup.js"></script>
+</body>
+</html>

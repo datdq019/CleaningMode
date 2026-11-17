@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Laptop Cleaning Mode - Active</title>
+  <style>
+    :root {
+      --bg-page: #0b1120;
+      --bg-card: #131c31;
+      --bg-elevated: rgba(255, 255, 255, 0.05);
+      --border-color: rgba(148, 163, 184, 0.16);
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --accent: #38bdf8;
+      --accent-glow: rgba(56, 189, 248, 0.25);
+    }
+
+    body[data-theme="mint"] {
+      --bg-page: #ecfdf5;
+      --bg-card: #ffffff;
+      --bg-elevated: rgba(6, 78, 59, 0.06);
+      --border-color: rgba(6, 78, 59, 0.14);
+      --text-primary: #064e3b;
+      --text-secondary: #047857;
+      --accent: #10b981;
+      --accent-glow: rgba(16, 185, 129, 0.22);
+    }
+
+    body[data-theme="cyber"] {
+      --bg-page: #0a0612;
+      --bg-card: #140d24;
+      --bg-elevated: rgba(217, 70, 239, 0.08);
+      --border-color: rgba(217, 70, 239, 0.28);
+      --text-primary: #fae8ff;
+      --text-secondary: #f0abfc;
+      --accent: #e879f9;
+      --accent-glow: rgba(232, 121, 249, 0.3);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+      background-color: var(--bg-page);
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      user-select: none;
+      overflow: hidden;
+    }
+
+    .mono {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+
+    .center-card {
+      width: 100%;
+      max-width: 520px;
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 26px;
+      padding: 36px 32px;
+      text-align: center;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.45);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .btn-fs {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 9px 18px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 600;
+      background: var(--accent-glow);
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      cursor: pointer;
+      margin-bottom: 24px;
+      transition: transform 0.15s ease, opacity 0.2s ease;
+    }
+
+    .btn-fs:hover {
+      transform: translateY(-1px);
+      opacity: 0.92;
+    }
+
+    .title-row {
+      margin: 0 0 12px 0;
+      font-size: 23px;
+      font-weight: 800;
+      letter-spacing: 0.03em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      text-transform: uppercase;
+    }
+
+    .timer-display {
+      font-size: 56px;
+      font-weight: 800;
+      color: var(--accent);
+      line-height: 1.1;
+      margin: 8px 0 22px 0;
+      letter-spacing: 0.04em;
+    }
+
+    .pills-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 15px;
+      border-radius: 999px;
+      font-size: 12.5px;
+      font-weight: 700;
+    }
+
+    .pill-locked {
+      background: rgba(244, 63, 94, 0.16);
+      color: #fb7185;
+      border: 1px solid rgba(244, 63, 94, 0.35);
+    }
+
+    .pill-unlocked {
+      background: rgba(16, 185, 129, 0.16);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.35);
+    }
+
+    .blocked-info {
+      font-size: 13.5px;
+      color: var(--text-secondary);
+      margin-bottom: 24px;
+    }
+
+    .blocked-num {
+      font-weight: 800;
+      color: var(--accent);
+      font-size: 15px;
+    }
+
+    .esc-pill-wrapper {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 22px;
+      border-radius: 999px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-color);
+      font-size: 12.5px;
+      color: var(--text-secondary);
+      overflow: hidden;
+    }
+
+    .esc-pill-fill {
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 0%;
+      background: var(--accent-glow);
+      z-index: 0;
+      transition: width 0.05s linear;
+    }
+
+    .esc-pill-text {
+      position: relative;
+      z-index: 1;
+    }
+  </style>
+</head>
+<body data-theme="dark">
+
+  <div class="center-card">
+    <button id="fullscreenBtn" type="button" class="btn-fs">
+      🖥️ Bấm để vào Toàn màn hình (Ẩn Taskbar)
+    </button>
+
+    <h1 class="title-row">
+      <span>🧽</span>
+      <span id="cleaningHeader">ĐANG VỆ SINH LAPTOP</span>
+    </h1>
+
+    <div id="cleanTimer" class="mono timer-display">03:00</div>
+
+    <!-- Hai thẻ viên thuốc ngang hàng như ảnh mẫu -->
+    <div class="pills-row">
+      <span id="kbStatusPill" class="pill pill-locked">⌨️ Bàn phím: 🔒 ĐÃ KHÓA</span>
+      <span id="tpStatusPill" class="pill pill-locked">🖱️ Touchpad: 🔒 ĐÃ KHÓA</span>
+    </div>
+
+    <div class="blocked-info">
+      <span id="blockedPrefix">Đã chặn</span>
+      <span id="blockedCounter" class="mono blocked-num">0</span>
+      <span id="blockedSuffix">thao tác vô tình</span>
+    </div>
+
+    <div class="esc-pill-wrapper">
+      <div id="escProgressBar" class="esc-pill-fill"></div>
+      <span id="escHoldHint" class="esc-pill-text">
+        Nhấn giữ phím <strong style="color: var(--text-primary);">ESC</strong> trong 2 giây để thoát
+      </span>
+    </div>
+  </div>
+
+  <script src="clean.js"></script>
+</body>
+</html>
